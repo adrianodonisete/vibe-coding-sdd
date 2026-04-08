@@ -45,19 +45,19 @@ Use this checklist to ship one feature at a time from the specification.
 
 ## Phase 2 - Core Study Flow
 
-- [ ] Implement random card presentation in Study mode (Spanish shown first).
+- [x] Implement random card presentation in Study mode (Spanish shown first).
     - **Acceptance criteria:**
     - Study screen renders one Spanish word at a time.
     - Next card selection is random.
     - Immediate repetition is avoided where feasible.
 
-- [ ] Implement card flip interaction to reveal English translation.
+- [x] Implement card flip interaction to reveal English translation.
     - **Acceptance criteria:**
     - Front shows Spanish only before flip.
     - Flip action reveals English translation.
     - Flip interaction feels immediate.
 
-- [ ] Show Right/Wrong buttons only after card is flipped.
+- [x] Show Right/Wrong buttons only after card is flipped.
     - **Acceptance criteria:**
     - Right/Wrong controls are hidden before flip.
     - Right/Wrong controls appear only after flip.
