@@ -13,6 +13,10 @@ dist/
 .vscode/
 Thumbs.db
 
+# Playwright artifacts
+playwright-report/
+test-results/
+
 
 # Plans
 plans-teacher/
