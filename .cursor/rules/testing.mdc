@@ -1,0 +1,34 @@
+---
+description: Playwright E2E test conventions for this project
+globs: tests/e2e/**/*.ts
+alwaysApply: true
+---
+
+# Playwright E2E Testing Rule
+
+## Core Expectations
+
+- Write deterministic tests: avoid arbitrary waits like `waitForTimeout`.
+- Use user-visible locators (`getByRole`, `getByLabel`, `getByText`) before CSS selectors.
+- Keep tests isolated: no shared mutable state between tests.
+- Use clear Arrange-Act-Assert flow in each test body.
+- Once you are done making changes to the codebase, run all the tests and ensure they pass.
+- Once you are done making changes, proactively ask the user if you should also write new tests to cover a new functionality.
+
+## Reliability Patterns
+
+```typescript
+// ❌ BAD
+await page.waitForTimeout(1500);
+await page.click('.submit-btn');
+
+// ✅ GOOD
+await page.getByRole('button', { name: 'Submit' }).click();
+await expect(page.getByText('Saved')).toBeVisible();
+```
+
+## Assertion Guidance
+
+- Assert behavior the user can observe, not implementation details.
+- Prefer `toBeVisible`, `toHaveURL`, and `toHaveText` over weak truthy checks.
+- Keep one primary intent per test; split broad scenarios into multiple tests.
