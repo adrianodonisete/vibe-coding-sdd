@@ -1,7 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import EmptyState from "./components/EmptyState";
+import PlaceholderPanel from "./components/PlaceholderPanel";
+import StudyPanel from "./components/StudyPanel";
 import { cards } from "./data/cards";
 import { readStorage, writeStorage } from "./lib/sessionStorage";
-import type { AppMode, Card, SessionCardState, SessionStats } from "./types/flashcards";
+import { buildDefaultSessionByCard, randomCardIndex } from "./lib/study";
+import type { AppMode, SessionCardState, SessionStats } from "./types/flashcards";
 
 const NAV_ITEMS: Array<{ key: AppMode; label: string }> = [
   { key: "study", label: "Study" },
@@ -18,104 +22,7 @@ const defaultStats: SessionStats = {
   incorrectCount: 0,
 };
 
-const defaultSessionByCard: Record<string, SessionCardState> = {};
-
-for (const card of cards) {
-  defaultSessionByCard[card.id] = {
-    cardId: card.id,
-    seen: false,
-    markedWrong: false,
-    markedRight: false,
-    inUnknownPool: false,
-  };
-}
-
-const randomCardIndex = (max: number, currentIndex?: number): number => {
-  if (max <= 1) return 0;
-
-  let nextIndex = Math.floor(Math.random() * max);
-  while (nextIndex === currentIndex) {
-    nextIndex = Math.floor(Math.random() * max);
-  }
-
-  return nextIndex;
-};
-
-const EmptyState = () => (
-  <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-    <h2 className="text-lg font-semibold text-slate-900">No cards available yet</h2>
-    <p className="mt-2 text-sm text-slate-600">
-      Add Spanish to English cards to start studying. Study and quiz actions are disabled
-      until cards exist.
-    </p>
-  </section>
-);
-
-const PlaceholderPanel = ({ mode }: { mode: AppMode }) => (
-  <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-    <h2 className="text-lg font-semibold text-slate-900">
-      {NAV_ITEMS.find((item) => item.key === mode)?.label}
-    </h2>
-    <p className="mt-2 text-sm text-slate-600">
-      Phase 1 complete: navigation shell and typed state are ready for this screen.
-    </p>
-  </section>
-);
-
-type StudyPanelProps = {
-  card: Card;
-  isFlipped: boolean;
-  onFlip: () => void;
-  onAnswer: () => void;
-};
-
-const StudyPanel = ({ card, isFlipped, onFlip, onAnswer }: StudyPanelProps) => (
-  <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-    <h2 className="text-lg font-semibold text-slate-900">Study</h2>
-    <p className="mt-4 text-sm text-slate-500">Spanish word</p>
-    <p className="mt-1 text-3xl font-bold tracking-wide text-slate-900">{card.spanish}</p>
-
-    <div className="mt-6 rounded-md border border-slate-200 bg-slate-50 p-4">
-      {isFlipped ? (
-        <>
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">English</p>
-          <p className="mt-1 text-2xl font-semibold text-slate-800">{card.english}</p>
-        </>
-      ) : (
-        <p className="text-sm text-slate-600">Flip the card to reveal the English translation.</p>
-      )}
-    </div>
-
-    <div className="mt-4 flex flex-wrap gap-2">
-      {!isFlipped ? (
-        <button
-          type="button"
-          onClick={onFlip}
-          className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-        >
-          Flip Card
-        </button>
-      ) : (
-        <>
-          <button
-            type="button"
-            onClick={onAnswer}
-            className="rounded-md border border-emerald-600 bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
-          >
-            Right
-          </button>
-          <button
-            type="button"
-            onClick={onAnswer}
-            className="rounded-md border border-rose-600 bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-700"
-          >
-            Wrong
-          </button>
-        </>
-      )}
-    </div>
-  </section>
-);
+const defaultSessionByCard: Record<string, SessionCardState> = buildDefaultSessionByCard(cards);
 
 function App() {
   const [mode, setMode] = useState<AppMode>(() =>
@@ -185,7 +92,7 @@ function App() {
             onAnswer={moveToNextCard}
           />
         ) : (
-          <PlaceholderPanel mode={mode} />
+          <PlaceholderPanel mode={mode} modeLabel={activeModeLabel} />
         )}
 
         <section className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600">
