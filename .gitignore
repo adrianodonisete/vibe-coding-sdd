@@ -23,3 +23,5 @@ plans-teacher/
 
 # Cursor MCP
 .cursor/mcp.json
+
+.vercel

@@ -1,0 +1,25 @@
+# Editor
+.vscode/
+.idea/
+
+# Local config / secrets
+.env.local
+.env.*.local
+.cursor/
+
+# Git and docs
+.git/
+docs/
+plans-teacher/
+
+# Tests and local reports
+tests/
+playwright-report/
+test-results/
+
+# Dependencies and build output
+node_modules/
+dist/
+
+# cursor
+.cursor/
